@@ -5,10 +5,11 @@ library(plyr)
 ##################### read maps in #####################
 
 #----------------Fan's map----------------------------------
-contig <- read.csv("Chinese_only_integrated_edit2.txt", sep = '\t')
+contig <- read.csv("Chinese_only_integrated_edit3_LG.txt", sep = '\t')
 # convert to "CCall_contigXX_v2"
 contig$Markers <- gsub("_\\d+","\\_v2", contig$Markers)
 contig$Markers <- gsub("v2c","\\_contig", contig$Markers)
+#contig[-c(grep("group",contig$Markers)),]
 head(contig)
 
 #--------------------HB2 map------------------------------
@@ -94,7 +95,7 @@ uniq_contigs <- deduped_pair[-c(rows_multi_loc),]
 
 
 #----------------Fan's map filtering--------------------------------
-blast_fan <- read.table("markers_blastn.txt", sep = '\t')
+blast_fan <- read.table("markers_blastn_0212.txt", sep = '\t')
 
 ## remove multiple matches, if a marker mapped to different contigs with same evalue, we discard it.
 filterBLAST_fan <- aggregate(V11~ V1+V2, data= blast_fan, FUN=min)
@@ -255,20 +256,20 @@ names(peach2chestnut)
 colnames(peach2chestnut) <- c("Location", "Tags", "Peach", "V1")
 Pp2_CM_blast <- merge(peach2chestnut,peach_uniq, by = "V1", all = T)
 names(Pp2_CM_blast)
-Pp2_CM_blast <- Pp2_CM_blast[,-c(3,5,7,8,9)]
+Pp2_CM_blast <- Pp2_CM_blast[,-c(3,5,7,8)]
 names(Pp2_CM_blast)
 colnames(Pp2_CM_blast)[1] <- c("contig")
 
 # Add orientations for Peach to chestnut using mummer and blast
-# Mummer and BLAST directions are saved in "MummDir.csv", first three columns are mummer result, the rest are blast results.
+#1. Mummer and BLAST directions are saved in "MummDir.csv", first three columns are mummer result, the rest are blast results.
 Pp2_CM_dir <- read.csv("MummDir.csv",header = T)
 head(Pp2_CM_dir)
 head(uniq_contigs)
 uniq_contigs_dir <- merge(uniq_contigs, Pp2_CM_dir[,c(1,3)], by.x = "Tag_Cm", by.y = "Cm", all.x = T)
 colnames(uniq_contigs_dir)[1] <- "contig"
 Pp2_CM_blast_dir <-join(Pp2_CM_blast, uniq_contigs_dir[,c(1,10)], by = "contig", type = "left", match = "first") 
-colnames(Pp2_CM_dir)[4] <- "contig"
-Pp2_CM_blast_dir <- join(Pp2_CM_blast_dir, Pp2_CM_dir[,c(4,8)], by = "contig", type = "left", match = "first")
+#colnames(Pp2_CM_dir)[4] <- "contig"
+#Pp2_CM_blast_dir <- join(Pp2_CM_blast_dir, Pp2_CM_dir[,c(4,8)], by = "contig", type = "left", match = "first")
 
 #2. Add Fan's map
 colnames(Fan_uniq)[3] <- c("contig")
@@ -277,7 +278,7 @@ names(Pp2_CM_blast_dir_Fan)
 colnames(Pp2_CM_blast_dir_Fan)[9] <- paste0("Markers")
 names(Pp2_CM_blast_dir_Fan)
 Pp2_CM_Fan <- join(Pp2_CM_blast_dir_Fan, contig, by = "Markers", match = "first")
-names(Pp2_CM_Fan)[names(Pp2_CM_Fan) %in% c("Markers","Cm","LG")]<-c("Fan_marker","Fan_cM","Fan_LG")
+names(Pp2_CM_Fan)[names(Pp2_CM_Fan) %in% c("Markers","cM","LG")]<-c("Fan_marker","Fan_cM","Fan_LG")
 
 #3. Add Oak map
 names(Oak_uniq)
@@ -295,13 +296,13 @@ newMap_all <- merge(newMap_JB1, NK4_new, by = "contig", all = T)
 
 # Rename some columns
 names(newMap_all)
-names(newMap_all)[names(newMap_all) %in% c("Peach","V2","Direction","V13")]<-c("Mumm_peach","Blst_peach","Mumm_dir","Blst_dir")
+names(newMap_all)[names(newMap_all) %in% c("Peach","V2","V13","Direction")]<-c("Mumm_peach","Blst_peach","Blst_dir","Mumm_dir")
 
 # Change direction labels to be consistent in mummer and blast.
 newMap_all$Blst_dir <- gsub("minus","-1",newMap_all$Blst_dir)
 newMap_all$Blst_dir <- gsub("plus","1", newMap_all$Blst_dir)
 
-write.csv(newMap_all,"AllMaps_20180202.csv")
+write.csv(newMap_all,"AllMaps_20180212.csv")
 ### Need to split the mummer reference location and change to order of columns in excel sheet. 
 
 #------------count duplications in Fan edited map----------------------------
