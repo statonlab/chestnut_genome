@@ -34,7 +34,6 @@ colnames(ESM)[1] <- c("Markers")
 ESM <- ESM[,1:3]
 head(ESM)
 ESM$Markers <- gsub("\\s+", "", ESM$Markers)
-ESM$Markers <- as.character(ESM$Markers)
 
 
 #--------------------------Oak map---------------------------
@@ -302,7 +301,13 @@ names(newMap_all)[names(newMap_all) %in% c("Peach","V2","V13","Direction")]<-c("
 newMap_all$Blst_dir <- gsub("minus","-1",newMap_all$Blst_dir)
 newMap_all$Blst_dir <- gsub("plus","1", newMap_all$Blst_dir)
 
-write.csv(newMap_all,"AllMaps_20180212.csv")
+#5 Add ESM map
+colnames(ESM)[1:3] <- c("Fan_marker","ESM_LC","ESM_cM")
+newMap_all_0223 <- join(newMap_all, ESM, by = "Fan_marker", match = "first")
+
+write.csv(newMap_all_0223,"AllMaps_20180223.csv")
+
+#write.csv(newMap_all,"AllMaps_20180212.csv")
 ### Need to split the mummer reference location and change to order of columns in excel sheet. 
 
 #------------count duplications in Fan edited map----------------------------
