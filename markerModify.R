@@ -94,7 +94,7 @@ uniq_contigs <- deduped_pair[-c(rows_multi_loc),]
 
 
 #----------------Fan's map filtering--------------------------------
-blast_fan <- read.table("markers_blastn_0212.txt", sep = '\t')
+blast_fan <- read.table("markers_blastn.txt", sep = '\t')
 
 ## remove multiple matches, if a marker mapped to different contigs with same evalue, we discard it.
 filterBLAST_fan <- aggregate(V11~ V1+V2, data= blast_fan, FUN=min)
