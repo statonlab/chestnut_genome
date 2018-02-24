@@ -1,16 +1,15 @@
-setwd("~/Desktop/Jiali/UTK/chestnut/")
+setwd("/Users/mestato/Desktop/chestnut_genome")
 
 library(plyr)
 
 ##################### read maps in #####################
 
 #----------------Fan's map----------------------------------
-contig <- read.csv("Chinese_only_integrated_edit3_LG.txt", sep = '\t')
+FanMap <- read.csv("./maps_table/Chinese_only_integrated_edit3_LG.txt", sep = '\t')
 # convert to "CCall_contigXX_v2"
-contig$Markers <- gsub("_\\d+","\\_v2", contig$Markers)
-contig$Markers <- gsub("v2c","\\_contig", contig$Markers)
-#contig[-c(grep("group",contig$Markers)),]
-head(contig)
+FanMap$Markers <- gsub("_\\d+","\\_v2", FanMap$Markers)
+FanMap$Markers <- gsub("v2c","\\_contig", FanMap$Markers)
+head(FanMap)
 
 #--------------------HB2 map------------------------------
 HB2 <- read.csv("HB2_map.csv", header = T, sep = '\t')
@@ -276,7 +275,7 @@ Pp2_CM_blast_dir_Fan <- merge(Pp2_CM_blast_dir,Fan_uniq[,c(2,3)], by = "contig",
 names(Pp2_CM_blast_dir_Fan)
 colnames(Pp2_CM_blast_dir_Fan)[9] <- paste0("Markers")
 names(Pp2_CM_blast_dir_Fan)
-Pp2_CM_Fan <- join(Pp2_CM_blast_dir_Fan, contig, by = "Markers", match = "first")
+Pp2_CM_Fan <- join(Pp2_CM_blast_dir_Fan, FanMap, by = "Markers", match = "first")
 names(Pp2_CM_Fan)[names(Pp2_CM_Fan) %in% c("Markers","cM","LG")]<-c("Fan_marker","Fan_cM","Fan_LG")
 
 #3. Add Oak map
