@@ -11,6 +11,14 @@ FanMap$Markers <- gsub("_\\d+","\\_v2", FanMap$Markers)
 FanMap$Markers <- gsub("v2c","\\_contig", FanMap$Markers)
 head(FanMap)
 
+#-------------------------Kubisiak's map---------------------------
+Kub <- read.csv("./maps_table/11295_2012_579_MOESM5_ESM.csv", header = T)
+head(Kub)
+colnames(Kub)[1] <- c("Markers")
+Kub <- Kub[,1:3]
+head(Kub)
+Kub$Markers <- gsub("\\s+", "", Kub$Markers)
+
 #--------------------HB2 map------------------------------
 HB2 <- read.csv("HB2_map.csv", header = T, sep = '\t')
 colnames(HB2)[3:4] <- c("name", "cM")
@@ -26,13 +34,6 @@ JB1$JB1_Marker <- paste0(JB1$V2,"_",JB1$V4)
 NK4 <- read.csv("NK4map.csv", header=F)
 NK4$NK4_Marker <- paste0(NK4$V2,"_",NK4$V4)
 
-#-------------------------ESM map---------------------------
-ESM <- read.csv("11295_2012_579_MOESM5_ESM.csv", header = T)
-head(ESM)
-colnames(ESM)[1] <- c("Markers")
-ESM <- ESM[,1:3]
-head(ESM)
-ESM$Markers <- gsub("\\s+", "", ESM$Markers)
 
 
 #--------------------------Oak map---------------------------
