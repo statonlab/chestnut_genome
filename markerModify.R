@@ -20,24 +20,24 @@ head(Kub)
 Kub$Markers <- gsub("\\s+", "", Kub$Markers)
 
 #--------------------HB2 map------------------------------
-HB2 <- read.csv("HB2_map.csv", header = T, sep = '\t')
+HB2 <- read.csv("./maps_table/HB2_map.csv", header = T, sep = '\t')
 colnames(HB2)[3:4] <- c("name", "cM")
 names(HB2)
 HB2$HB2_Marker <- paste0(HB2$ID,"_",HB2$name)
 names(HB2)
 
 #---------------------JB1 map--------------------------------
-JB1 <- read.csv("JB1map.csv", header=F)
+JB1 <- read.csv("./maps_table/JB1map.csv", header=F)
 JB1$JB1_Marker <- paste0(JB1$V2,"_",JB1$V4)
 
 #--------------------NK4 map---------------------------------
-NK4 <- read.csv("NK4map.csv", header=F)
+NK4 <- read.csv("./maps_table/NK4map.csv", header=F)
 NK4$NK4_Marker <- paste0(NK4$V2,"_",NK4$V4)
 
 
 
 #--------------------------Oak map---------------------------
-Oak <- read.csv("~/Downloads/csvTOfasta/Composite_file_map_Vf_260413.csv", header = T)
+Oak <- read.csv("./maps_table/Composite_file_map_Vf_260413.csv", header = T)
 Oak <- Oak[,1:3]
 head(Oak)
 
