@@ -43,8 +43,7 @@ head(Oak)
 
 
 #--------------------peach blast filtering-------------------------
-#blast_peach <- read.table("Pp2Cm_blastn.txt", sep = '\t')
-blast_peach <- read.table("Pp2Cm_blastn_0117.txt", sep = '\t')
+blast_peach <- read.table("./Blast_Mummer/Pp2Cm_blastn_0117.txt", sep = '\t')
 
 ## remove multiple matches, if a marker mapped to different contigs with same evalue, we discard it.
 filterBLAST_peach <- aggregate(V11~ V1+V2, data= blast_peach, FUN=min)
@@ -72,7 +71,7 @@ colnames(peach_uniq)[6:7] <- c("start", "stop")
 #write.csv(peach_uniq,"BLAST_Peach.csv")
 
 ##------------------------- Peach to chestnut mummer filtering--------------------------------
-filterPp2_CM <- read.table("Pp2_Cm.coords.filter",header = T,sep = "|")
+filterPp2_CM <- read.table("./Blast_Mummer/Pp2_Cm.coords.filter",header = T,sep = "|")
 colnames(filterPp2_CM) <- c("ref","query","length","identity","contig length","coverage","Tags")
 
 library(stringr)
@@ -94,7 +93,7 @@ uniq_contigs <- deduped_pair[-c(rows_multi_loc),]
 
 
 #----------------Fan's map filtering--------------------------------
-blast_fan <- read.table("markers_blastn.txt", sep = '\t')
+blast_fan <- read.table("./Blast_Mummer/markers_blastn.txt", sep = '\t')
 
 ## remove multiple matches, if a marker mapped to different contigs with same evalue, we discard it.
 filterBLAST_fan <- aggregate(V11~ V1+V2, data= blast_fan, FUN=min)
@@ -121,7 +120,7 @@ names(Fan_uniq)
 colnames(Fan_uniq)[7:8] <- c("start", "stop")
 
 #----------------HB2 map filtering------------------------------
-blast_HB2 <- read.table("HB2_blastn.txt", sep = '\t')
+blast_HB2 <- read.table("./Blast_Mummer/HB2_blastn.txt", sep = '\t')
 
 ## remove multiple matches, if a marker mapped to different contigs with same evalue, we discard it.
 filterBLAST_HB2 <- aggregate(V11~ V1+V2, data= blast_HB2, FUN=min)
@@ -155,7 +154,7 @@ colnames(HB2_new)[2:4] <- c("contig","HB2_Group","HB2_cM")
 HB2_new$HB2_Marker <- paste0("HB2_",HB2_new$HB2_Marker)
 
 #------------------------JB1 map blast filtering--------------------------------------
-blast_JB1 <- read.table("JB1_blastn.txt", sep = '\t')
+blast_JB1 <- read.table("./Blast_Mummer/JB1_blastn.txt", sep = '\t')
 
 ## remove multiple matches, if a marker mapped to different contigs with same evalue, we discard it.
 filterBLAST_JB1 <- aggregate(V11~ V1+V2, data= blast_JB1, FUN=min)
@@ -188,7 +187,7 @@ JB1_new <- JB1_new[,c(1,3,9,10)]
 colnames(JB1_new)[2:4] <- c("contig","JB1_Group","JB1_cM")
 
 #----------------------NK4 map filtering ------------------------------------
-blast_NK4 <- read.table("NK4_blastn.txt", sep = '\t')
+blast_NK4 <- read.table("./Blast_Mummer/NK4_blastn.txt", sep = '\t')
 
 ## remove multiple matches, if a marker mapped to different contigs with same evalue, we discard it.
 filterBLAST_NK4 <- aggregate(V11~ V1+V2, data= blast_NK4, FUN=min)
@@ -222,7 +221,7 @@ colnames(NK4_new)[2:4] <- c("contig","NK4_Group","NK4_cM")
 
 
 #-------------------oak map blast filtering-------------------------------------------
-blast_Oak <- read.table("Oak_Cm.txt", sep = '\t')
+blast_Oak <- read.table("./Blast_Mummer/Oak_Cm.txt", sep = '\t')
 
 ## remove multiple matches, if a marker mapped to different contigs with same evalue, we discard it.
 filterBLAST_Oak <- aggregate(V11~ V1+V2, data= blast_Oak, FUN=min)
@@ -261,7 +260,7 @@ colnames(Pp2_CM_blast)[1] <- c("contig")
 
 # Add orientations for Peach to chestnut using mummer and blast
 #1. Mummer and BLAST directions are saved in "MummDir.csv", first three columns are mummer result, the rest are blast results.
-Pp2_CM_dir <- read.csv("MummDir.csv",header = T)
+Pp2_CM_dir <- read.csv("./Blast_Mummer/MummDir.csv",header = T)
 head(Pp2_CM_dir)
 head(uniq_contigs)
 uniq_contigs_dir <- merge(uniq_contigs, Pp2_CM_dir[,c(1,3)], by.x = "Tag_Cm", by.y = "Cm", all.x = T)
@@ -301,9 +300,9 @@ names(newMap_all)[names(newMap_all) %in% c("Peach","V2","V13","Direction")]<-c("
 newMap_all$Blst_dir <- gsub("minus","-1",newMap_all$Blst_dir)
 newMap_all$Blst_dir <- gsub("plus","1", newMap_all$Blst_dir)
 
-#5 Add ESM map
-colnames(ESM)[1:3] <- c("Fan_marker","ESM_LC","ESM_cM")
-newMap_all_0223 <- join(newMap_all, ESM, by = "Fan_marker", match = "first")
+#5 Add Kubisiak map
+colnames(Kub)[1:3] <- c("Fan_marker","Kub_LC","Kub_cM")
+newMap_all_0223 <- join(newMap_all, Kub, by = "Fan_marker", match = "first")
 
 write.csv(newMap_all_0223,"AllMaps_20180223.csv")
 
