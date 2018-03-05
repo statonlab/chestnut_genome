@@ -307,7 +307,15 @@ newMap_all_0223 <- join(newMap_all, Kub, by = "Fan_marker", match = "first")
 # split the location column
 library(tidyr)
 newMap_all_0223$Location <- lapply(newMap_all_0223$Location, trimws)
-newMap_all_0223 <- separate(data=newMap_all_0223, col = Location, into = c("mummer_peach_start", "Mummer_peach_end"), sep = "\\s+")
+newMap_all_0223 <- separate(data=newMap_all_0223, col = Location, into = c("Mummer_peach_start", "Mummer_peach_end"), sep = "\\s+")
+
+# fix column names and order
+colnames(newMap_all_0223)[c(1,2,6)] <- c("Kub_Fan_marker", "Chestnut_contig", "Mummer_peach_scaffold")
+colnames(newMap_all_0223)[c(7,8,9)]<- c("Blast_peach_scaffold", "Blast_peach_start", "Blast_peach_end")
+colnames(newMap_all_0223)[c(10,11,17)]<- c("Blast_direction", "Mummer_direction", "HB2_LG")
+colnames(newMap_all_0223)[c(20,23,25)]<- c("JB1_LG", "NK4_LG", "Kub_LG")
+
+newMap_all_0223 <- newMap_all_0223[c("Chestnut_contig", "Mummer_peach_scaffold", "Mummer_peach_start", "Mummer_peach_end", "Mummer_direction", "Blast_peach_scaffold", "Blast_peach_start", "Blast_peach_end", "Blast_direction", "Kub_Fan_marker", "Fan_LG", "Fan_cM", "Kub_LG", "Kub_cM", "HB2_Marker", "HB2_LG", "HB2_cM", "JB1_Marker", "JB1_LG", "JB1_cM", "NK4_Marker", "NK4_LG", "NK4_cM", "Oak_marker", "Oak_LG", "Oak_cM")]
 
 write.csv(newMap_all_0223,"AllMaps_20180223.csv")
 
