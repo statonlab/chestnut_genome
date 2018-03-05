@@ -304,6 +304,11 @@ newMap_all$Blst_dir <- gsub("plus","1", newMap_all$Blst_dir)
 colnames(Kub)[1:3] <- c("Fan_marker","Kub_LC","Kub_cM")
 newMap_all_0223 <- join(newMap_all, Kub, by = "Fan_marker", match = "first")
 
+# split the location column
+library(tidyr)
+newMap_all_0223$Location <- lapply(newMap_all_0223$Location, trimws)
+newMap_all_0223 <- separate(data=newMap_all_0223, col = Location, into = c("mummer_peach_start", "Mummer_peach_end"), sep = "\\s+")
+
 write.csv(newMap_all_0223,"AllMaps_20180223.csv")
 
 #write.csv(newMap_all,"AllMaps_20180212.csv")
