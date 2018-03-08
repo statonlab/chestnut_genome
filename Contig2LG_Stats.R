@@ -48,3 +48,25 @@ contig2lg <- unique(contig2lg)
 contig2lg <- contig2lg[order(contig2lg$Chestnut_contig),]
 row.names(contig2lg) <- 1:nrow(contig2lg)
 
+###---------------------------------------------
+### Subset df into contigs with a single LG (not chimeras) vs those with more than one LG (chimeras)
+###---------------------------------------------
+
+# get a logical vector with all duplicate contigs marked
+contig2lg_duplicated <- duplicated(contig2lg$Chestnut_contig) | duplicated(contig2lg$Chestnut_contig, fromLast = TRUE)
+
+# filter dataframe for those that are duplicated
+contig2lg_chimera <- contig2lg[contig2lg_duplicated,]
+
+# and filter dataframe for those that are not duplicated
+contig2lg_not_chimera <- contig2lg[!contig2lg_duplicated,]
+
+###---------------------------------------------
+### Get contig length stats for each list (chimera and non chimera contigs)
+###---------------------------------------------
+
+# Read in contig lengths and merge with dfs
+contig2len <- read.table("./maps_table/Castanea_mollissima_scaffolds_v3.1_NCBI_final.lens.tsv", stringsAsFactors = FALSE, )
+
+# clean up contig names by removing lcl
+contig2len$Fan_LG <- gsub("\\s+","", contig2lg$Fan_LG)
