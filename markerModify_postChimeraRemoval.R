@@ -80,8 +80,8 @@ filterPp2_CM$Tag_dir <- t(as.data.frame(str_split(filterPp2_CM$Tags,'[[:space:]]
 filterPp2_CM$Tag_peach <- t(as.data.frame(str_split(filterPp2_CM$Tags,'[[:space:]]+')))[,4]
 
 filterPp2_CM$Tag_Cm <- t(as.data.frame(str_split(filterPp2_CM$Tags,'\t')))[,2]
-peach2chestnut <- filterPp2_CM[,c(1,7,8,9)]
-colnames(peach2chestnut) <- c("Location", "Tags", "Peach", "V2")
+peach2chestnut <- filterPp2_CM[,c("ref","Tags","Tag_peach","Tag_Cm", "Tag_dir")]
+colnames(peach2chestnut) <- c("Location", "Tags", "Peach", "V2", "Dir")
 
 ## delete contigs mapped to multiple peach chromosomes
 rows_dup_contigs <- which(filterPp2_CM$Tags %in% unique(filterPp2_CM$Tags[duplicated(filterPp2_CM$Tags)]),)
@@ -263,15 +263,21 @@ colnames(Pp2_CM_blast)[1] <- c("contig")
 
 # Add orientations for Peach to chestnut using mummer and blast
 #1. Mummer and BLAST directions are saved in "MummDir.csv", first three columns are mummer result, the rest are blast results.
-Pp2_CM_dir <- read.csv("./Blast_Mummer_postChimeraRemoval/MummDir.csv",header = T)
-head(Pp2_CM_dir)
-head(uniq_contigs)
-uniq_contigs_dir <- merge(uniq_contigs, Pp2_CM_dir[,c(1,3)], by.x = "Tag_Cm", by.y = "Cm", all.x = T)
-colnames(uniq_contigs_dir)[1] <- "contig"
-Pp2_CM_blast_dir <-join(Pp2_CM_blast, uniq_contigs_dir[,c(1,10)], by = "contig", type = "left", match = "first") 
+#Pp2_CM_dir <- read.csv("./Blast_Mummer_postChimeraRemoval/MummDir.csv",header = T)
+#head(Pp2_CM_dir)
+#head(uniq_contigs)
+#uniq_contigs_dir <- merge(uniq_contigs, Pp2_CM_dir[,c(1,3)], by.x = "Tag_Cm", by.y = "Cm", all.x = T)
+#colnames(uniq_contigs_dir)[1] <- "contig"
+#Pp2_CM_blast_dir <-join(Pp2_CM_blast, uniq_contigs_dir[,c(1,10)], by = "contig", type = "left", match = "first") 
 #colnames(Pp2_CM_dir)[4] <- "contig"
 #Pp2_CM_blast_dir <- join(Pp2_CM_blast_dir, Pp2_CM_dir[,c(4,8)], by = "contig", type = "left", match = "first")
 
+##---
+# need to recreate Pp2_CM_blast_dir
+##---
+###          contig            Location Peach   V2    start     stop   V13 Direction
+### 1 contig0000003                <NA>  <NA> Pp04  2618049 25237118 minus        NA
+### 2 contig0000004  9303536  9303758    Pp01 Pp01  2794855 34482605 minus        -1
 #2. Add Fan's map
 colnames(Fan_uniq)[3] <- c("contig")
 Pp2_CM_blast_dir_Fan <- merge(Pp2_CM_blast_dir,Fan_uniq[,c(2,3)], by = "contig", all = T)
