@@ -57,16 +57,52 @@ contig2lg_duplicated <- duplicated(contig2lg$Chestnut_contig) | duplicated(conti
 
 # filter dataframe for those that are duplicated
 contig2lg_chimera <- contig2lg[contig2lg_duplicated,]
+contig_chimera <- contig2lg_chimera[,c("Chestnut_contig")]
+contig_chimera <- unique(contig_chimera)
+
 
 # and filter dataframe for those that are not duplicated
 contig2lg_not_chimera <- contig2lg[!contig2lg_duplicated,]
+contig_not_chimera <- contig2lg_not_chimera[,c("Chestnut_contig")]
+contig_not_chimera <- unique(contig_not_chimera)
 
 ###---------------------------------------------
 ### Get contig length stats for each list (chimera and non chimera contigs)
 ###---------------------------------------------
 
 # Read in contig lengths and merge with dfs
-contig2len <- read.table("./maps_table/Castanea_mollissima_scaffolds_v3.1_NCBI_final.lens.tsv", stringsAsFactors = FALSE, )
+contig2len <- read.table("./maps_table/Castanea_mollissima_scaffolds_v3.1_NCBI_final.lens.tsv", stringsAsFactors = FALSE,
+                         col.names = c("Chestnut_contig", "Contig_length"))
 
 # clean up contig names by removing lcl
-contig2len$Fan_LG <- gsub("\\s+","", contig2lg$Fan_LG)
+contig2len$Chestnut_contig <- gsub("lcl\\|","", contig2len$Chestnut_contig)
+
+# filter the len df by list of contigs
+contig_chimera_lengths <- subset(contig2len, contig2len$Chestnut_contig %in% contig_chimera)
+length(contig_chimera)
+sum(contig_chimera_lengths$Contig_length)
+
+contig_not_chimera_lengths <- subset(contig2len, contig2len$Chestnut_contig %in% contig_not_chimera)
+length(contig_not_chimera)
+sum(contig_not_chimera_lengths$Contig_length)
+
+# print a summary of results
+print( paste( 'Contigs that are mapped to a single LG: ',
+               length(contig_not_chimera),
+               '(',
+              sum(contig_not_chimera_lengths$Contig_length),
+               'bp)'
+            )
+     )
+
+print( paste( 'Contigs that are chimeric (i.e. mapped to more than one LG): ',
+              length(contig_chimera),
+              '(',
+              sum(contig_chimera_lengths$Contig_length),
+              'bp)'
+            )
+      )
+
+# create a file of chimeras - one file with the uniq list, one with the LGs
+write.csv(contig_chimera_lengths, "contig_chimera_lengths.csv")
+write.csv(contig2lg_chimera, "contig_chimera_LGs.csv")
