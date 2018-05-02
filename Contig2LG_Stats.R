@@ -10,7 +10,7 @@ library(reshape2)
 setwd("/Users/mestato/Desktop/chestnut_genome")
 
 # read in data frame of all contig mappings
-contig2lg <- read.csv("AllMaps_20180306.csv", stringsAsFactors = FALSE)
+contig2lg <- read.csv("AllMaps_20180501.csv", stringsAsFactors = FALSE)
 
 # remove columns we don't need for this
 contig2lg <- contig2lg[,c("Chestnut_contig","Fan_LG","Kub_LG","JB1_LG","NK4_LG","HB2_LG")]
@@ -71,7 +71,7 @@ contig_not_chimera <- unique(contig_not_chimera)
 ###---------------------------------------------
 
 # Read in contig lengths and merge with dfs
-contig2len <- read.table("./maps_table/Castanea_mollissima_scaffolds_v3.1_NCBI_final.lens.tsv", stringsAsFactors = FALSE,
+contig2len <- read.table("./maps_table/Castanea_mollissima_scaffolds_v3.2.lens.tsv", stringsAsFactors = FALSE,
                          col.names = c("Chestnut_contig", "Contig_length"))
 
 # clean up contig names by removing lcl
@@ -104,5 +104,6 @@ print( paste( 'Contigs that are chimeric (i.e. mapped to more than one LG): ',
       )
 
 # create a file of chimeras - one file with the uniq list, one with the LGs
-write.csv(contig_chimera_lengths, "contig_chimera_lengths.csv")
-write.csv(contig2lg_chimera, "contig_chimera_LGs.csv")
+write.csv(contig_chimera_lengths, "contig_chimera_lengths_postChimeraRemoval0501.csv")
+write.csv(contig2lg_chimera, "contig_chimera_LGs_0501_postChimeraRemoval0501.csv")
+
