@@ -324,15 +324,25 @@ newMap_all_0223 <- newMap_all_0223[c("Chestnut_contig", "Mummer_peach_scaffold",
 
 write.csv(newMap_all_0223,"AllMaps_20180501.csv")
 
-#write.csv(newMap_all,"AllMaps_20180212.csv")
-### Need to split the mummer reference location and change to order of columns in excel sheet. 
+##----------------------------------------------------------------------
+## John has requested a version of the spreadsheet with only Fan's map
+
+newMap_FanOnly_0223 <- newMap_all_0223[,c("Chestnut_contig","Kub_Fan_marker","Fan_LG","Fan_cM")]
+
+# remove rows with NAs for all LG columns
+newMap_FanOnly_0223 <- newMap_FanOnly_0223[rowSums(is.na(newMap_FanOnly_0223)) < 2, ]
+
+# remove duplicate rows
+newMap_FanOnly_0223 <- unique(newMap_FanOnly_0223)
+
+write.csv(newMap_FanOnly_0223,"FanMaps_20180501.csv")
 
 #------------count duplications in Fan edited map----------------------------
 # Fan's 2nd edit, remove some duplications
-Fan_edit2 <- read.csv("Chinese_only_integrated_edit2.csv", header = T)
-colnames(Fan_edit2)[3] <- "LG"
-Fan_edit2 <- Fan_edit2[-c(grep("group",Fan_edit2$Markers)),]
-Fan_edit2$Markers <- gsub("_\\d+","\\_v2", Fan_edit2$Markers)
-Fan_edit2$Markers <- gsub("v2c","\\_contig", Fan_edit2$Markers)
-duplicates <- Fan_edit2[c(which(Fan_edit2$Markers %in% unique(Fan_edit2$Markers[duplicated(Fan_edit2$Markers)]),)),]
+#Fan_edit2 <- read.csv("Chinese_only_integrated_edit2.csv", header = T)
+#colnames(Fan_edit2)[3] <- "LG"
+#Fan_edit2 <- Fan_edit2[-c(grep("group",Fan_edit2$Markers)),]
+#Fan_edit2$Markers <- gsub("_\\d+","\\_v2", Fan_edit2$Markers)
+#Fan_edit2$Markers <- gsub("v2c","\\_contig", Fan_edit2$Markers)
+#duplicates <- Fan_edit2[c(which(Fan_edit2$Markers %in% unique(Fan_edit2$Markers[duplicated(Fan_edit2$Markers)]),)),]
 
