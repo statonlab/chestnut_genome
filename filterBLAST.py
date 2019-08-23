@@ -8,15 +8,15 @@ and cumulative alignment length percentage (CALP) as two parameters to filtering
 length thereby increasing stringency in defining conservation between two genome sequences. (Jerome Salse, 2009)
 
 Usage:
-python filterBLAST.py <input file name> <output file name> --CIP int --CALP int
+python filterBLAST.py <input file name> <output file name> --cip int --calp int
 """
 import argparse
 import sys
-parser = argparse.ArgumentParser(description="Filter blast hits based on CIP and CALP", usage="%(prog)s <input file> <output file> [--CIP int] [--CALP int]")
+parser = argparse.ArgumentParser(description="Filter blast hits based on CIP and CALP", usage="%(prog)s <input file> <output file> [--cip int] [--calp int]")
 parser.add_argument("input", type=str, help="input blast tabular file")
 parser.add_argument("output", type=str, help="output file")
-parser.add_argument('--CIP', action='store', type=int, required=True)
-parser.add_argument('--CALP', action='store', type=int, required=True)
+parser.add_argument('--cip', action='store', type=int, required=True, help="cumulative identity percentage cutoff")
+parser.add_argument('--calp', action='store', type=int, required=True, help="cumulative alignment length percentage cutoff")
 args = parser.parse_args()
 BLASTfile = args.input
 output_file = args.output
@@ -84,7 +84,7 @@ def main():
             non_overlap_iden, non_overlap_length  = removeOverlap(HSP_iden, HSP_length, hits)
             CIP, CALP = getParameters(non_overlap_iden, non_overlap_length, query_len)
             #print round(CIP,2), round(CALP,2)
-            if CIP > args.CIP and CALP > args.CALP:
+            if CIP > args.cip and CALP > args.calp:
                 file_out.write(line)
 
 main()
