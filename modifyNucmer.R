@@ -72,3 +72,28 @@ length(unique(filteredMah_Cm_coor$CM))
 
 combineQl_MA <- merge(filteredMah_Cm_coor, filteredQl_Cm_coor, by="CM", all=T)
 write.csv(combineQl_MA, "Cm_Ma_Ql_nucmer.csv")
+
+# get seq len of the contiges
+contig_len <- read.table("Castanea_mollissima_scaffolds_v3.2.lens.tsv", header = F)
+seq_len <- sum(contig_len$V2)
+seq_len
+names(contig_len) <- c("CM", "length")
+contig_len$CM <- gsub("\\|","_", contig_len$CM)
+combineQl_MA <- join(combineQl_MA, contig_len, by = "CM", type="left")
+Ql_contig_len <- join(filteredQl_Cm_coor, contig_len, by = "CM", type = "left")
+Mah_contig_len <- join(filteredMah_Cm_coor, contig_len, by = "CM", type = "left")
+
+# Calculate the number of contigs and length of mapped contigs   
+stats_contigs <- function(df){
+rows_dup <- which(df$CM %in% unique(df$CM[duplicated(df$CM)]),)
+length(rows_dup)
+length(df$CM) - length(rows_dup)
+multimapped <- sum(df$length[rows_dup])
+print(length(unique(df$CM[rows_dup])))
+print(sum(unique(df$length[rows_dup])))
+unqiue_len <- sum(df$length) - multimapped
+print(length(df$CM) - length(df$CM[rows_dup]))
+print(unqiue_len)
+}
+stats_contigs(Ql_contig_len)
+stats_contigs(Mah_contig_len)
