@@ -97,3 +97,33 @@ print(unqiue_len)
 }
 stats_contigs(Ql_contig_len)
 stats_contigs(Mah_contig_len)
+
+## merge the combine maps to Allmaps
+allmap <- read.csv("AllMaps_CM_May2018v6.csv", header = T)
+combineQl_MA$CM <- gsub("lcl_","",combineQl_MA$CM)
+names(combineQl_MA)[1] <- "Chestnut_contig"
+new_allmap <- join(allmap[,-c(27,28)], combineQl_MA[,-8], by = "Chestnut_contig", match="first")
+write.csv(new_allmap, "AllMaps_CM_Sep2019.csv")
+
+QL_MA_only <- combineQl_MA[which(!combineQl_MA$Chestnut_contig %in% intersect(allmap$Chestnut_contig, combineQl_MA$Chestnut_contig)),]
+write.csv(QL_MA_only, "contigs_not_in_allmap.csv")
+
+## compare Ql and mahogany to the version 4.1 arrangement
+CmVersion4 <- read.csv("Castanea_mollissima_scaffolds_v4.1_contigPositions.csv", header = T)
+length(unique(CmVersion4$cc_lcl_contig))
+## Ql uniquely mapped contigs vs v4.1
+rows_dup <- which(Ql_contig_len$CM %in% unique(Ql_contig_len$CM[duplicated(Ql_contig_len$CM)]),)
+uniq_Ql_Cm <- Ql_contig_len[-rows_dup,]
+V4_shared_Ql <- intersect(uniq_Ql_Cm$CM, CmVersion4$cc_lcl_contig)
+sum(uniq_Ql_Cm$length[which(uniq_Ql_Cm$CM %in% V4_shared_Ql)])
+# Mahogany uniquely mapped contigs vs v4.1
+rows_dup <- which(Mah_contig_len$CM %in% unique(Mah_contig_len$CM[duplicated(Mah_contig_len$CM)]),)
+uniq_Ma_Cm <- Mah_contig_len[-rows_dup,]
+V4_shared_Mah <- intersect(uniq_Ma_Cm$CM, CmVersion4$cc_lcl_contig)
+sum(uniq_Ma_Cm$length[which(uniq_Ma_Cm$CM %in% V4_shared_Mah)])
+
+## add version 4.1 map to allmaps
+CmVersion4$cc_lcl_contig <- gsub("lcl_","",CmVersion4$cc_lcl_contig)
+names(CmVersion4)[1] <- "Chestnut_contig"
+new_allmapV2 <- join(new_allmap, CmVersion4, by = "Chestnut_contig", match = "first")
+write.csv(new_allmapV2, "AllMaps_CM_Sep2019v2.csv")
