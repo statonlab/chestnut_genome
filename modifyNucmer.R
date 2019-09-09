@@ -127,3 +127,38 @@ CmVersion4$cc_lcl_contig <- gsub("lcl_","",CmVersion4$cc_lcl_contig)
 names(CmVersion4)[1] <- "Chestnut_contig"
 new_allmapV2 <- join(new_allmap, CmVersion4, by = "Chestnut_contig", match = "first")
 write.csv(new_allmapV2, "AllMaps_CM_Sep2019v2.csv")
+
+## split HB2, JB1, NK4 parants LG
+# dedup allmaps
+dedupMap <- unique(allmap[,1:14])
+# split HB2
+HB2_A1map <- unique(allmap[grep("1",allmap$HB2_LG),][,c(1,15,16,17)])
+HB2_A2map <- unique(allmap[grep("2", allmap$HB2_LG),][,c(1,15,16,17)])
+new_allmapV3 <- join(dedupMap,HB2_A1map, by = "Chestnut_contig", match = "all")
+names(new_allmapV3)[15:17] <- c("HB2_P1_Marker","HB2_P1_LG", "HB2_P1_cM")
+new_allmapV3 <- join(new_allmapV3,HB2_A2map, by = "Chestnut_contig", match = "all")
+names(new_allmapV3)[18:20] <- c("HB2_P2_Marker","HB2_P2_LG", "HB2_P2_cM")
+
+# split JB1
+JB1_A1map <- unique(allmap[grep("[A-Z]_", allmap$JB1_Marker),][,c(1,18,19,20)])
+JB1_A2map <- unique(allmap[grep("[A-Z]2", allmap$JB1_LG),][,c(1,18,19,20)])
+new_allmapV3 <- join(new_allmapV3, JB1_A1map, by = "Chestnut_contig", match = "all")
+names(new_allmapV3)[21:23] <- c("JB1_P1_Marker","JB1_P1_LG","JB1_P1_cM")
+new_allmapV3 <- join(new_allmapV3, JB1_A2map, by="Chestnut_contig", match= "all")
+names(new_allmapV3)[24:26] <- c("JB1_P2_Marker","JB1_P2_LG","JB1_P2_cM")
+
+# split NK4
+NK4_A1map <- unique(allmap[grep("[A-Z]_", allmap$NK4_Marker),][,c(1,21,22,23)])
+NK4_A2map <- unique(allmap[grep("2", allmap$NK4_LG),][,c(1,21,22,23)])
+new_allmapV3 <- join(new_allmapV3, NK4_A1map, by="Chestnut_contig",match="all")
+names(new_allmapV3)[27:29] <- c("NK4_P1_Marker","NK4_P1_LG","NK4_P1_cM")
+new_allmapV3 <- join(new_allmapV3, NK4_A2map, by="Chestnut_contig",match = "all")
+names(new_allmapV3)[30:32] <- c("NK4_P2_Marker","NK4_P2_LG","NK4_P2_cM")
+
+# add the rest of mapps(oak_markers, v4.1_LG, Mahogany, Qlobata)
+oak_map <- unique(allmap[,c(1,24,25,26)])
+new_allmapV3 <- join(new_allmapV3, oak_map, by = "Chestnut_contig", match = "all")
+new_allmapV3 <- join(new_allmapV3, CmVersion4, by = "Chestnut_contig", match="all")
+new_allmapV3_wQM <- join(new_allmapV3, combineQl_MA[,-8], by = "Chestnut_contig", match="first")
+
+write.csv(new_allmapV3_wQM, "AllMaps_CM_Sep2019v3.csv")
