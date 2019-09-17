@@ -1,7 +1,7 @@
 ## get stats for the psudochromasome table
 
 # read tables
-new_ps <- read.csv("Pseudochromosomes_cdn_bac_v10.csv", header = T)
+new_ps <- read.csv("Pseudochromosomes_cdn_bac_v11.csv", header = T)
 # read the contig length table
 contig_len <- read.table("Castanea_mollissima_scaffolds_v3.2.lens.tsv", header = F)
 names(contig_len) <- c("cc_contig", "length")
@@ -23,10 +23,10 @@ rows_dup <- which(new_ps$cc_contig %in% unique(new_ps$cc_contig[duplicated(new_p
 multimap <- new_ps[rows_dup,]
 length(unique(multimap$cc_contig))
 sum(unique(multimap$length))
-uniq <- new_ps[-rows_dup,]
+uniq <- new_ps#[-rows_dup,]
 
 sum(uniq$length,na.rm=T)
-length(new_ps$cc_contig[-rows_dup])
+length(uniq$cc_contig)
 sum(multimap$gene_number[unique(multimap$cc_contig)], na.rm = T)
 sum(uniq$length, na.rm = T)
 sum(uniq$gene_number, na.rm = T)
@@ -44,3 +44,4 @@ CmVersion4 <- join(CmVersion4, contig_gene_number, by = "Chestnut_contig", type 
 
 # save contig gene number into a csv file
 write.csv(contig_gene_number, "Cm_contigs_gene.numbers.csv") 
+sum(contig_gene_number$gene_number, rm.ma=T)
