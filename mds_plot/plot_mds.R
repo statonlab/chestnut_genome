@@ -3,20 +3,20 @@ library(ggplot2)
 ## MDS plot using all.fitered.mds
 d <- read.table("plink.mds", h=T)
 d$genotype <-  gsub(":H.*","",d$FID)
-d$genotype[1:76] <- "B3F3"
+d$genotype[1:76] <- "BC3F3"
 d <- d[-(191:192),]
-d$species = factor(c(rep("B3F3", 76), rep("Clapper", 16), rep("C.dentata", 82), rep("Vanuxem",16)))
+d$species = factor(c(rep("BC3F3", 76), rep("BC1 Clapper", 16), rep("C.dentata", 82), rep("Vanuxem",16)))
 
-plot(d$C1, d$C2, col=as.integer(d$species), pch=19, xlab="MDS component 1", ylab="MDS component 2", main = "MDS")
-legend("topright", c("B3F3", "Clapper", "C.dentata","Vanuxem"), pch=19, col=c(1,3,2,4))
-
-ggplot(d, aes(C1, C2, shape=species, color=genotype)) +
+ggplot(d, aes(C1, C2, color=genotype, shape=species)) +
   geom_point(size=3) +
-  xlab("MDS component 1") +
-  ylab("MDS component 2") + 
+  xlab("MDS 1") +
+  ylab("MDS 2") + 
   coord_fixed() +
   scale_color_brewer(palette="Set3")+
-  theme_classic(base_size = 14)
+  theme_classic(base_size = 14) +
+  guides(size = guide_legend(order=2),
+         shape = guide_legend(order=1))
+
 
 ggsave("MDS_all_version3.2.png", height = 8, width = 8)  
 
